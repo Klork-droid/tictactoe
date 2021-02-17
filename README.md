@@ -1,6 +1,5 @@
-# Slapjack
+# Tic tac toe
 > A game of one-player tic tac toe in your console.
-![Menu](screenshots/menu.png)
 
 ### Game Rules
 You must select one of the numbers in the table to put x
