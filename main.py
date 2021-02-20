@@ -48,7 +48,7 @@ def create_key_data(check_load):
     elif args.n.isdigit() and args.k.isdigit():
         Game.row = int(args.n)
         Game.column = int(args.k)
-        Game.place = [[0] * Game.column for i in range(Game.row)]
+        Game.place = [[0] * Game.column for _ in range(Game.row)]
         for i in range(Game.row):
             for j in range(Game.column):
                 Game.place[i][j] = 1 + Game.column * i + j
@@ -100,7 +100,7 @@ def auto_create_input_from_player(player_symbol):
         return value
 
 
-def temp(y_num, x_num, y_step, x_step, min_value, max_value):
+def calculate_points(y_num, x_num, y_step, x_step, min_value, max_value):
     """
     Нахождение количества X или O в одну сторону при 0 и в обратную при 1
     Формулами заменил повторяющийся код отличающийся только одним знаком
@@ -123,8 +123,8 @@ def calculate_points_in_one_line(y_num, x_num, y_step, x_step):
     """"Нахождение количества X или O в одной линии"""
     symbol_in_place_count = 0
     max_value = min(Game.row, Game.column)
-    symbol_in_place_count += temp(y_num, x_num, y_step, x_step, 0, max_value)
-    symbol_in_place_count += temp(y_num, x_num, y_step, x_step, 1, max_value)
+    symbol_in_place_count += calculate_points(y_num, x_num, y_step, x_step, 0, max_value)
+    symbol_in_place_count += calculate_points(y_num, x_num, y_step, x_step, 1, max_value)
     return symbol_in_place_count
 
 
