@@ -1,6 +1,7 @@
 import pickle
 import argparse
 import random
+from enum import Enum
 
 
 class Game:
@@ -11,7 +12,7 @@ class Game:
     error = False
     continue_game = True
 
-    class InputChar:
+    class InputChar(Enum):
         PLAYER = 'X'
         COMPUTER = 'O'
 
@@ -45,7 +46,7 @@ def create_key_data(check_load):
         Game.row = data.get('row')
         Game.column = data.get('column')
 
-    elif args.n.isdigit() and args.k.isdigit():
+    else:
         Game.row = int(args.n)
         Game.column = int(args.k)
         Game.place = [[0] * Game.column for _ in range(Game.row)]
@@ -53,10 +54,6 @@ def create_key_data(check_load):
             for j in range(Game.column):
                 Game.place[i][j] = 1 + Game.column * i + j
         Game.counter = 0
-
-    else:
-        print('Аргументы n и k должны принимать числа')
-        Game.error = True
 
 
 def draw_place():
@@ -79,7 +76,7 @@ def read_input_from_player(player_symbol):
             if value.isdigit() and 1 <= int(value) <= max_value:
                 value = int(value)
                 y_num, x_num = calc_xy(value)
-                if str(Game.place[y_num][x_num]) in Game.InputChar:
+                if str(Game.place[y_num][x_num]) in [char.value for char in Game.InputChar]:
                     print('Клетка уже занята')
                     continue
                 Game.place[y_num][x_num] = player_symbol
@@ -94,7 +91,7 @@ def auto_create_input_from_player(player_symbol):
     while True:
         value = random.randint(1, Game.row * Game.column)
         y_num, x_num = calc_xy(value)
-        if str(Game.place[y_num][x_num]) in Game.InputChar:
+        if str(Game.place[y_num][x_num]) in [char.value for char in Game.InputChar]:
             continue
         Game.place[y_num][x_num] = player_symbol
         return value
@@ -161,13 +158,13 @@ def main():
             'column': Game.column,
         }
         if Game.counter % 2 == 0:
-            value = read_input_from_player(Game.InputChar.PLAYER)
+            value = read_input_from_player(Game.InputChar.PLAYER.value)
             if value == 'save':
                 save(data)
                 Game.continue_game = False
                 continue
         else:
-            value = auto_create_input_from_player(Game.InputChar.COMPUTER)
+            value = auto_create_input_from_player(Game.InputChar.COMPUTER.value)
         if Game.counter >= min(Game.row, Game.column) * 2 - 2:
             draw_place()
             Game.continue_game = calculate_points_in_all_line(value)
@@ -176,8 +173,8 @@ def main():
 
 """Парсер аргументов из консоли"""
 parser = argparse.ArgumentParser(description='Game tic tac toe')
-parser.add_argument('-n', action='store', dest='n', help='Row value')
-parser.add_argument('-k', action='store', dest='k', help='Column value')
+parser.add_argument('-n', action='store', type=int, dest='n', help='Row value')
+parser.add_argument('-k', action='store', type=int, dest='k', help='Column value')
 parser.add_argument('-l', action='store', dest='l', help='Load save (true/false)')
 args = parser.parse_args()
 
